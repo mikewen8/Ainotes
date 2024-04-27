@@ -1,0 +1,16 @@
+git commands-
+
+git clone- makes a clone of the repo
+
+git branch makes a new branch
+
+git checkout will checkout a branch
+
+git add (file_name) to add to the branch
+
+git commit -m "message" to confirm changes and upload to local repo
+
+git push origin (Branch) will send out the branch to the remote repo
+
+git merge to merge branches
+
