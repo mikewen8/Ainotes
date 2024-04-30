@@ -13,8 +13,9 @@ db = client['Studygroup']
 collection = db['Users']
 
 # Document to insert
+#_id is user id but need to make it a primary key
 document = {
-    "userid": 1,
+    "_id": 1,
     "Name": "Mike"
 }
 
