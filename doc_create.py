@@ -14,10 +14,9 @@ collection = db['Notes']
 
 # Document to insert
 document = {
-    "_id": 1,
+    "_id": 2,
     "Name": "Mike",
-    "Note": "This is the very first note",
-    "Noteid": 1
+    "Note": "This is the very first note and it is a very very long note, it can be a very long long note maybe a full essay woth of notes I'm trying to see how much storage this will take for this super super long note",
 }
 
 # Insert the document into the collection
