@@ -26,6 +26,6 @@ new_user ={
     "Name":name
 }
 
-print (new_user)
+
 add_doc(new_document)
 add_user(new_user)
