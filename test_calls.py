@@ -1,4 +1,5 @@
 from doc_create import add_doc
+from user_create import add_user
 from pull import pull_doc, pull_user
 id = pull_user()
 doc =pull_doc()
@@ -11,7 +12,7 @@ new_doc=doc["_id"]
 new_doc+=1
 print(new_doc)
 
-name = input("input your name")
+name = input(" input your name")
 
 new_document = {
     "_id": new_doc,
@@ -26,4 +27,5 @@ new_user ={
 }
 
 print (new_user)
-#add_doc(new_document)
+add_doc(new_document)
+add_user(new_user)
