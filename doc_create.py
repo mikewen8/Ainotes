@@ -21,9 +21,9 @@ document = {
 }
 """
 # Insert the document into the collection
-def add_doc(x):
+def add_doc(doc):
     try:
-        result = collection.insert_one(x)
+        result = collection.insert_one(doc)
         print("Inserted document id:", result.inserted_id)
     except Exception as e:
         print("An error occurred:", e)
