@@ -14,14 +14,16 @@ collection = db['Users']
 
 # Document to insert
 #_id is user id but need to make it a primary key
+"""
 document = {
     "_id": 1,
     "Name": "Mike"
 }
-
+"""
 # Insert the document into the collection
-try:
-    result = collection.insert_one(document)
-    print("Inserted document id:", result.inserted_id)
-except Exception as e:
-    print("An error occurred:", e)
+def add_user(user):
+    try:
+        result = collection.insert_one(user)
+        print("Inserted document id:", result.inserted_id)
+    except Exception as e:
+        print("An error occurred:", e)
