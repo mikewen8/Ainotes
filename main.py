@@ -2,9 +2,9 @@ from flask import Flask
 from flask import request, jsonify
 from flask_cors import CORS
 import creation_calls
-import test
+import gemini
 import pull
-import os
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -12,7 +12,7 @@ app.config["CORS_HEADERS"]= "Content-Type"
 
 
 
-app.route('/Pull',methods =["Post","GET"])
+app.route('/Pull',methods =["POST","GET"])
 def Pull():
     if request.method == "GET":
         content = request.args.get("Name")
