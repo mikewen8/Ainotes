@@ -1,7 +1,8 @@
 from flask import Flask
 from flask import request, jsonify
 from flask_cors import CORS
-from backendcalls import creation_calls,pull
+import creation_calls
+import pull
 import os
 
 app = Flask(__name__)
