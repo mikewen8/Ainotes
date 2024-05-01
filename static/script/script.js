@@ -10,6 +10,7 @@ createBtn.addEventListener("click", ()=>{
     img.src = "images/delete.png";
     notesContainer.appendChild(inputBox).appendChild(img);
     let noteContent = inputBox.textContent.trim();
+    /*
     let formData = new FormData();
     formData.append('content', noteContent);
     fetch('/add_note', {
@@ -27,6 +28,7 @@ createBtn.addEventListener("click", ()=>{
     .catch(error => {
         console.error('Error:', error);
     });
+    */
 } )
 
 
