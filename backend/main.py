@@ -20,6 +20,13 @@ def Pull():
     #here I need to do the pymongo here 
     return jsonify(x)
 
+"""def Pull():
+    content = request.args.get("name")
+    mydb = sqlite3.connect("thisdirectory/mydatabasedb")  # corrected line
+    mycursor = mydb.cursor()
+    myDetails = mycursor.execute(SELECT*From Info where Name ='{name}'.format(name = content))
+    return jsonify
+"""
 
 app.route('/Pull',methods =["Post","GET"])
 def Push():   
