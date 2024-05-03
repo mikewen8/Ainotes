@@ -109,8 +109,6 @@ def edit_note(id):
 
 
 
-
-
 @app.route('/shownotes', methods=['GET'])
 def show_notes():
     all_notes = list(notes.find())
