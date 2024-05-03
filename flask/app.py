@@ -22,7 +22,7 @@ usersc = db['Users']
 
 
 def send_note(doc): 
-    response = model.generate_content("Create a summary out of this document:" + doc)
+    response = model.generate_content("Create a summary out of this document and provide an example:" + doc)
     print(response.text)
     return response.text
 
