@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studygroup</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <h1>Studygroup APP</h1>
+    <form action="{{ url_for('login') }}" method="POST">
+        <div class="msg">{{ msg }}</div>
+        <input id="username" name="username" type="text" placeholder="Enter Your Username" class="textbox"/></br></br>
+        <input id="password" name="password" type="password" placeholder="Enter Your Password" class="textbox"/></br></br></br>
+        <button type="submit">Sign In</button>
+    </form>
+    <p class="bottom">Don't have an account?  <a class="bottom" href=""> Sign Up here</a></p>
+</body>
+</html>
+

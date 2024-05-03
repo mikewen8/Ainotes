@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studygroup</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <h1>Studygroup APP</h1>
+    <div class="content">
+        <form method="POST">
+            <p>
+                <b><label for="content">Notes</label></b>
+            </p>
+            <p>
+                <!-- Add the name attribute to the input field -->
+                <input type="text" name="content">
+            </p>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
