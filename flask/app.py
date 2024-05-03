@@ -23,10 +23,10 @@ collection2 = db['Users']
 def index():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'userid':"Michael",'note':content})
+        notes.insert_one({'userid':"Michael", 'content': content})
     #this will render the frontend
     all_notes = notes.find()
-    return render_template('index.html', notes = all_notes)
+    return render_template('index.html', Notes = all_notes)
 
 
 if __name__ == '__main__':
