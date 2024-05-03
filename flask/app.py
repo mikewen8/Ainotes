@@ -61,6 +61,24 @@ def login():
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
 
+@app.route("/register",methods=['GET','POST'])
+def register():
+    msg=''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        user = usersc.find_one({'Name': username})
+        if user:
+            msg = 'Account already exists !'
+        elif not username or not password:
+            msg = 'Please fill out the form !'
+        else:
+            usersc.insert_one({'Name': username, 'Pswd': password})
+            msg = 'You have successfully registered!'
+            return render_template('login.html',msg=msg)
+    return render_template('register.html',msg=msg)
+
+
 
 #---------------Michael SHEEESH -------------------------------
 
