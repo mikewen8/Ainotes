@@ -9,7 +9,7 @@
 <body>
     <h1>Studygroup APP</h1>
     <div class="content">
-        <form method="POST">
+        <form action="{{ url_for('createnote') }}" method="POST">
             <p>
                 <b><label for="content">Notes</label></b>
             </p>
@@ -18,13 +18,11 @@
                 <input type="text" name="content">
             </p>
             <button type="submit">Submit</button>
-        </form>
-        {%for Note in Notes%}
+            {%for Note in Notes%}
             <div class="Note">
             <p>{{Note['content']}}</p>
-            <a href="note.html/{{Note[id]}}">goto</a>
-        {%endfor%}
-
+            {%endfor%}
+        </form>
     </div>
 </body>
 </html>

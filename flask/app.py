@@ -2,7 +2,7 @@
 #url_for generate url 
 #request access todo / documents
 #redirect use to redirct student index page
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import google.generativeai as genai
@@ -42,7 +42,7 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        user = collection2.find_one({'Name': username, 'Pswd': password})
+        user = usersc.find_one({'Name': username, 'Pswd': password})
         if user:
             msg = 'logged in successfully!'
             return render_template('createnote.html', msg=msg)
@@ -57,7 +57,7 @@ def index():
         content = request.form['content']
         id=notes.find_one(sort=[("_id", -1)]) 
         id['_id']+=1
-        notes.insert_one({'_id':id['_id'],'username':"Michael", 'content': content})
+        notes.insert_one({'_id':id['_id'],'username':(session['username']), 'content': content})
     #this will render the frontend
     all_notes = notes.find()
     return render_template('createnote.html', Notes = all_notes)
