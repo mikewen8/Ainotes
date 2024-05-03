@@ -1,0 +1,73 @@
+/* Reset default browser styles */
+body, h1, form, button, label, div {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic layout */
+.content {
+    display: flex;
+    margin-top: 20px;
+}
+
+.main {
+    flex: 1;
+    margin-right: 20px;
+}
+
+/* Form styles */
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#content {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 200px;
+    margin-bottom: 10px;
+    overflow-y: auto;
+}
+
+button {
+    margin-top: 10px;
+}
+
+/* Highlighted text */
+mark {
+    background-color: yellow;
+}
+
+/* Link style */
+a {
+    display: block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Sidebar styles */
+.sidebar {
+    flex: 0 0 200px;
+    border-left: 1px solid #ccc;
+    padding-left: 20px;
+    margin-left: auto; /* Move sidebar to the right */
+    align-self: flex-start; /* Push sidebar to the top */
+}
+
+#sidebar {
+    overflow-y: auto;
+}
+
+#sidebar h2 {
+    margin-top: 0;
+}
