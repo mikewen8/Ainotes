@@ -19,6 +19,12 @@
             </p>
             <button type="submit">Submit</button>
         </form>
+        {%for Note in Notes%}
+            <div class="Note">
+            <p>{{Note['content']}}</p>
+            </div>
+        {%endfor%}
+
     </div>
 </body>
 </html>
