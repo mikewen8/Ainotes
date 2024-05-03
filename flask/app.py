@@ -65,7 +65,7 @@ def login():
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'username':(session['username']), 'content': content})
+        notes.insert_one({'created_by':(session['username']), 'content': content})
     #this will render the frontend
     all_notes = notes.find()
     summary = session.pop('summary', None)
@@ -90,11 +90,20 @@ def edit_note(id):
         flash('Note not found', 'error')
         return redirect(url_for('createnote'))
 
+    # Check if the current user is the creator or is in the shared_with list
+    current_user = session.get('username')
+    if note['created_by'] != current_user and current_user not in note['shared_with']:
+        flash('Access denied', 'error')
+        return redirect(url_for('createnote'))
+
     if request.method == 'POST':
         new_content = request.form.get('content', '')
         notes.update_one({'_id': ObjectId(id)}, {'$set': {'content': new_content}})
-        return '', 204  
+        flash('Note updated successfully', 'success')
+        return redirect(url_for('createnote'))
+
     return render_template('edit_note.html', note=note)
+
 
 
 
