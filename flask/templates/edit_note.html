@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>Edit Note</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
         // Function to save the note automatically every 5 minutes
         function autoSaveNote() {
@@ -26,7 +27,7 @@
         }
 
         // Save every 5 minutes (300,000 milliseconds)
-        setInterval(autoSaveNote, 1000);
+        setInterval(autoSaveNote, 300000);
     </script>
 </head>
 <body>
