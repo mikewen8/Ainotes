@@ -2,10 +2,12 @@
 #url_for generate url 
 #request access todo / documents
 #redirect use to redirct student index page
-from flask import Flask, render_template, url_for, request, redirect, session
+from flask import Flask, render_template, url_for, request, redirect, session, flash
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import google.generativeai as genai
+from bson import ObjectId
+
 genai.configure(api_key="AIzaSyCUXEfHA5OvN6Y41kEVaOVHPf5ayq8-2oo")
 model = genai.GenerativeModel('gemini-pro')
 
@@ -17,8 +19,15 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Studygroup']
 notes = db['Notes']
 usersc = db['Users']
+
+
+def send_note(doc): 
+    response = model.generate_content("Create a summary out of this document:" + doc)
+    print(response.text)
+    return response.text
+
 def pull_user():
-    largest_id_document = notes.find_one(sort=[("_id", -1)]) 
+    largest_id_document = usersc.find_one(sort=[("_id", -1)]) 
     if largest_id_document:
         print("The largest _id is:", largest_id_document['_id'])
     else:
@@ -26,7 +35,7 @@ def pull_user():
     return largest_id_document
 
 def pull_doc():
-    largest_id_document = usersc.find_one(sort=[("_id", -1)]) 
+    largest_id_document = notes.find_one(sort=[("_id", -1)]) 
     if largest_id_document:
         print("The largest Notes _id is:", largest_id_document['_id'])
     else:
@@ -56,13 +65,23 @@ def login():
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        id=notes.find_one(sort=[("_id", -1)]) 
-        id['_id']+=1
-        notes.insert_one({'_id':id['_id'],'username':(session['username']), 'content': content})
+        notes.insert_one({'username':(session['username']), 'content': content})
     #this will render the frontend
     all_notes = notes.find()
-    return render_template('createnote.html', Notes = all_notes)
+    summary = session.pop('summary', None)
+    return render_template('createnote.html', Notes=all_notes, summary=summary)
 
+@app.route("/<id>/sent/")
+def sent(id):
+    doc = notes.find_one({'_id': ObjectId(id)})
+    if not doc:
+        flash('Note not found', 'error')
+        return redirect(url_for('createnote'))
+    summary = send_note(doc['content'])
+    flash(f'Summary: {summary}', 'info')
+    session['summary'] = summary  # Store the summary in session
+
+    return redirect(url_for('createnote'))
 
 if __name__ == '__main__':
     app.run(debug=True)

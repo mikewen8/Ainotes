@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studygroup</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1>Studygroup APP</h1>
@@ -14,15 +14,28 @@
                 <b><label for="content">Notes</label></b>
             </p>
             <p>
-                <!-- Add the name attribute to the input field -->
-                <input type="text" name="content">
+                <input type="text" name="content" required>
             </p>
             <button type="submit">Submit</button>
-            {%for Note in Notes%}
-            <div class="Note">
-            <p>{{Note['content']}}</p>
-            {%endfor%}
         </form>
+        
+        {% if summary %}
+            <h2>Summary</h2>
+            <p>{{ summary }}</p>
+        {% endif %}
+        
+        {% if Notes %}
+            {% for Note in Notes %}
+            <div class="Note">
+                <p>{{ Note['content'] }}</p>
+                <form method="GET" action="{{ url_for('sent', id=Note['_id']) }}">
+                    <input type="submit" value="Summarize" />
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No notes available.</p>
+        {% endif %}
     </div>
 </body>
 </html>
