@@ -2,7 +2,7 @@
 #url_for generate url 
 #request access todo / documents
 #redirect use to redirct student index page
-from flask import Flask, render_template, url_for, request, redirect, session, flash
+from flask import Flask, render_template, url_for, request, redirect, session, flash, jsonify
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import google.generativeai as genai
@@ -89,14 +89,14 @@ def edit_note(id):
     if not note:
         flash('Note not found', 'error')
         return redirect(url_for('createnote'))
-    
+
     if request.method == 'POST':
-        new_content = request.form['content']
+        new_content = request.form.get('content', '')
         notes.update_one({'_id': ObjectId(id)}, {'$set': {'content': new_content}})
-        flash('Note updated successfully', 'success')
-        return redirect(url_for('createnote'))
-    
+        return '', 204  
     return render_template('edit_note.html', note=note)
+
+
 
 
 @app.route('/shownotes', methods=['GET'])
@@ -113,6 +113,24 @@ def show_note(id):
         flash('Note not found', 'error')
         return redirect(url_for('createnote'))
     return render_template('show_note.html', note=note)
+
+
+@app.route('/summarize_selected', methods=['POST'])
+def summarize_selected():
+    data = request.get_json()
+    selected_text = data.get('text', '')
+
+    if not selected_text:
+        return jsonify({'error': 'No text selected'}), 400
+
+    # Use send_note function to generate the summary
+    summary = send_note(selected_text)
+    return jsonify({'summary': summary})
+
+def summarize_function(content):
+    # Implement your summarization logic here
+    return content[:100]  # Example: returning the first 100 characters
+
 
 if __name__ == '__main__':
     app.run(debug=True)

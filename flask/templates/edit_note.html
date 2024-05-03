@@ -4,9 +4,83 @@
     <title>Edit Note</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
-        // Function to save the note automatically every 5 minutes
+        // Function to highlight the selected text
+        function captureHighlight() {
+            const selection = window.getSelection();
+            if (!selection.toString()) {
+                alert('Please select text to highlight.');
+                return;
+            }
+
+            const range = selection.getRangeAt(0);
+            const mark = document.createElement('mark');
+            range.surroundContents(mark);
+        }
+
+        // Function to unhighlight only the selected text
+        function unhighlightSelection() {
+            const selection = window.getSelection();
+            if (!selection.toString()) {
+                alert('Please select highlighted text to unhighlight.');
+                return;
+            }
+
+            const range = selection.getRangeAt(0);
+            const markNode = range.commonAncestorContainer.parentElement;
+
+            if (markNode.tagName.toLowerCase() === 'mark') {
+                const parent = markNode.parentNode;
+                while (markNode.firstChild) {
+                    parent.insertBefore(markNode.firstChild, markNode);
+                }
+                parent.removeChild(markNode);
+            } else {
+                alert('Selected text is not highlighted.');
+            }
+        }
+
+        // Function to summarize highlighted text and display the summary in the sidebar
+        function summarizeHighlight() {
+            const contentDiv = document.getElementById('content');
+            const selected = contentDiv.querySelector('mark');
+
+            if (!selected) {
+                alert('No highlighted text found. Please highlight text first.');
+                return;
+            }
+
+            const question = selected.textContent;
+
+            fetch("{{ url_for('summarize_selected') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'text': question
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the summary in the sidebar
+                const sidebar = document.getElementById('sidebar');
+                const summaryDiv = document.createElement('div');
+                summaryDiv.textContent = data.summary;
+                sidebar.appendChild(summaryDiv);
+            });
+        }
+
+        // Function to copy contenteditable div content to hidden input
+        function prepareForm() {
+            const contentEditableDiv = document.getElementById('content');
+            const hiddenInput = document.getElementById('contentInput');
+            hiddenInput.value = contentEditableDiv.innerHTML;
+        }
+
+        // Function to auto-save content every minute
         function autoSaveNote() {
-            const content = document.getElementById('content').value;
+            const contentEditableDiv = document.getElementById('content');
+            const noteContent = contentEditableDiv.innerHTML;
 
             fetch("{{ url_for('edit_note', id=note['_id']) }}", {
                 method: 'POST',
@@ -14,7 +88,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams({
-                    'content': content
+                    'content': noteContent
                 })
             })
             .then(response => {
@@ -26,17 +100,28 @@
             });
         }
 
-        // Save every 5 minutes (300,000 milliseconds)
-        setInterval(autoSaveNote, 1000);
+        // Auto-save every minute (60,000 milliseconds)
+        setInterval(autoSaveNote, 6000);
     </script>
 </head>
 <body>
     <h1>Edit Note</h1>
-    <form action="{{ url_for('edit_note', id=note['_id']) }}" method="POST">
-        <label for="content">Note:</label>
-        <input type="text" id="content" name="content" value="{{ note['content'] }}" required>
-        <button type="submit">Save Changes</button>
-    </form>
+    <div class="content">
+        <div class="main">
+            <form action="{{ url_for('edit_note', id=note['_id']) }}" method="POST" onsubmit="prepareForm()">
+                <label for="content">Note:</label>
+                <div id="content" contenteditable="true">{{ note['content'] | safe }}</div>
+                <input type="hidden" id="contentInput" name="content">
+                <button type="submit">Save Changes</button>
+            </form>
+            <button type="button" onclick="captureHighlight()">Capture and Highlight Text</button>
+            <button type="button" onclick="unhighlightSelection()">Unhighlight Selected Text</button>
+            <button type="button" onclick="summarizeHighlight()">Summarize Highlighted Text</button>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <h2>Summaries</h2>
+        </div>
+    </div>
     <a href="{{ url_for('createnote') }}">Back to Notes</a>
 </body>
 </html>
