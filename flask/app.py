@@ -16,7 +16,22 @@ app = Flask(__name__)
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Studygroup']
 notes = db['Notes']
-collection2 = db['Users']
+usersc = db['Users']
+def pull_user():
+    largest_id_document = notes.find_one(sort=[("_id", -1)]) 
+    if largest_id_document:
+        print("The largest _id is:", largest_id_document['_id'])
+    else:
+        print("No documents found in the collection.")
+    return largest_id_document
+
+def pull_doc():
+    largest_id_document = usersc.find_one(sort=[("_id", -1)]) 
+    if largest_id_document:
+        print("The largest Notes _id is:", largest_id_document['_id'])
+    else:
+        print("No documents found in the collection.")
+    return largest_id_document
 
 #home data to show data and submit todo items
 @app.route("/",methods=['GET','POST'])
@@ -30,6 +45,13 @@ def index():
     all_notes = notes.find()
     return render_template('index.html', Notes = all_notes)
 
+@app.route("/",method=['EDIT'])
+def index():
+    if request.method == 'EDIT':
+        newcontent = request.form['content']
+        notes.find_one_update_one({'_id':4},{"note":newcontent})
+    notes.find['_id':4]
+    return render_template('note.html',)
 
 if __name__ == '__main__':
     app.run(debug=True)
