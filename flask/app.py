@@ -5,7 +5,6 @@
 from flask import Flask, render_template, url_for, request, redirect
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-
 import google.generativeai as genai
 genai.configure(api_key="AIzaSyCUXEfHA5OvN6Y41kEVaOVHPf5ayq8-2oo")
 model = genai.GenerativeModel('gemini-pro')
@@ -36,16 +35,23 @@ def pull_doc():
 #home data to show data and submit todo items
 
 
-@app.route("/createnote",methods=['GET','POST'])
-def index():
-    if request.method == 'POST':
-        content = request.form['content']
-        notes.insert_one({'userid':"Michael", 'content': content})
-    #this will render the frontend
-    all_notes = notes.find()
-    return render_template('createnote.html', Notes = all_notes)
+@app.route("/")
+@app.route("/login",methods=['GET','POST'])
+def login():
+    msg=''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        user = collection2.find_one({'Name': username, 'Pswd': password})
+        if user:
+            msg = 'logged in successfully!'
+            return render_template('createnote.html', msg=msg)
+        else:
+            print("Bruh")
+            msg='Incorrect Password/Username'
+    return render_template('login.html',msg=msg)
 
-@app.route("/",methods=['GET','POST'])
+@app.route("/createnote",methods=['GET','POST'])
 def index():
     if request.method == 'POST':
         content = request.form['content']
@@ -54,7 +60,7 @@ def index():
         notes.insert_one({'_id':id['_id'],'username':"Michael", 'content': content})
     #this will render the frontend
     all_notes = notes.find()
-    return render_template('index.html', Notes = all_notes)
+    return render_template('createnote.html', Notes = all_notes)
 
 @app.route("/note",methods=['EDIT'])
 def note():
