@@ -79,9 +79,16 @@ def sent(id):
         return redirect(url_for('createnote'))
     summary = send_note(doc['content'])
     flash(f'Summary: {summary}', 'info')
-    session['summary'] = summary  # Store the summary in session
-
+    session['summary'] = summary 
     return redirect(url_for('createnote'))
+
+
+@app.route('/shownotes', methods=['GET'])
+def show_notes():
+    all_notes = list(notes.find())
+    summary = session.pop('summary', None)
+    return render_template('createnote.html', Notes=all_notes, summary=summary)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
