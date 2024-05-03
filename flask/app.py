@@ -34,6 +34,17 @@ def pull_doc():
     return largest_id_document
 
 #home data to show data and submit todo items
+
+
+@app.route("/createnote",methods=['GET','POST'])
+def index():
+    if request.method == 'POST':
+        content = request.form['content']
+        notes.insert_one({'userid':"Michael", 'content': content})
+    #this will render the frontend
+    all_notes = notes.find()
+    return render_template('createnote.html', Notes = all_notes)
+
 @app.route("/",methods=['GET','POST'])
 def index():
     if request.method == 'POST':
