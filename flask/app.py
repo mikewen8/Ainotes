@@ -45,13 +45,13 @@ def index():
     all_notes = notes.find()
     return render_template('index.html', Notes = all_notes)
 
-@app.route("/",method=['EDIT'])
-def index():
+@app.route("/note",methods=['EDIT'])
+def note():
     if request.method == 'EDIT':
         newcontent = request.form['content']
         notes.find_one_update_one({'_id':4},{"note":newcontent})
-    notes.find['_id':4]
-    return render_template('note.html',)
+    note = notes.find['_id':4]
+    return render_template('note.html',note)
 
 if __name__ == '__main__':
     app.run(debug=True)
