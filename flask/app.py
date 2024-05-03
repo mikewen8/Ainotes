@@ -86,7 +86,7 @@ def register():
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'created_by':(session['username']), 'content': content})
+        notes.insert_one({'created_by':(session['username']), 'content': content, 'shared_with':['Dev','Adhithyaa']})
     #this will render the frontend
     all_notes = notes.find()
     summary = session.pop('summary', None)
@@ -129,9 +129,11 @@ def edit_note(id):
 
 @app.route('/shownotes', methods=['GET'])
 def show_notes():
-    all_notes = list(notes.find())
+    all_notes_byuser = list(notes.find({'created_by': session['username']}))
+    all_sharedtouser = list(notes.find({'shared_with': session['username']}))
+    all_notes_byuser+=all_sharedtouser
     summary = session.pop('summary', None)
-    return render_template('createnote.html', Notes=all_notes, summary=summary)
+    return render_template('createnote.html', Notes=all_notes_byuser, summary=summary)
 
 
 @app.route("/note/<id>")
