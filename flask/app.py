@@ -11,6 +11,7 @@ model = genai.GenerativeModel('gemini-pro')
 
 uri = "mongodb+srv://Mike:Mikedev88@studygroup.zvgkeux.mongodb.net/?retryWrites=true&w=majority&appName=Studygroup"
 app = Flask(__name__)
+app.secret_key = "your_secret_key_here"
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Studygroup']
@@ -44,15 +45,15 @@ def login():
         password = request.form['password']
         user = usersc.find_one({'Name': username, 'Pswd': password})
         if user:
+            session['username'] = username
             msg = 'logged in successfully!'
             return render_template('createnote.html', msg=msg)
         else:
-            print("Bruh")
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
 
 @app.route("/createnote",methods=['GET','POST'])
-def index():
+def createnote():
     if request.method == 'POST':
         content = request.form['content']
         id=notes.find_one(sort=[("_id", -1)]) 
@@ -62,13 +63,6 @@ def index():
     all_notes = notes.find()
     return render_template('createnote.html', Notes = all_notes)
 
-@app.route("/note",methods=['EDIT'])
-def note():
-    if request.method == 'EDIT':
-        newcontent = request.form['content']
-        notes.find_one_update_one({'_id':4},{"note":newcontent})
-    note = notes.find['_id':4]
-    return render_template('note.html',note)
 
 if __name__ == '__main__':
     app.run(debug=True)
