@@ -61,6 +61,9 @@ def login():
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
 
+
+#---------------Michael SHEEESH -------------------------------
+
 @app.route("/createnote",methods=['GET','POST'])
 def createnote():
     if request.method == 'POST':
