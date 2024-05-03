@@ -83,12 +83,36 @@ def sent(id):
     return redirect(url_for('createnote'))
 
 
+@app.route("/edit_note/<id>", methods=['GET', 'POST'])
+def edit_note(id):
+    note = notes.find_one({'_id': ObjectId(id)})
+    if not note:
+        flash('Note not found', 'error')
+        return redirect(url_for('createnote'))
+    
+    if request.method == 'POST':
+        new_content = request.form['content']
+        notes.update_one({'_id': ObjectId(id)}, {'$set': {'content': new_content}})
+        flash('Note updated successfully', 'success')
+        return redirect(url_for('createnote'))
+    
+    return render_template('edit_note.html', note=note)
+
+
 @app.route('/shownotes', methods=['GET'])
 def show_notes():
     all_notes = list(notes.find())
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes, summary=summary)
 
+
+@app.route("/note/<id>")
+def show_note(id):
+    note = notes.find_one({'_id': ObjectId(id)})
+    if not note:
+        flash('Note not found', 'error')
+        return redirect(url_for('createnote'))
+    return render_template('show_note.html', note=note)
 
 if __name__ == '__main__':
     app.run(debug=True)

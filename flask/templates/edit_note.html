@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Note</title>
+    <script>
+        // Function to save the note automatically every 5 minutes
+        function autoSaveNote() {
+            const content = document.getElementById('content').value;
+
+            fetch("{{ url_for('edit_note', id=note['_id']) }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'content': content
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Note saved successfully.');
+                } else {
+                    console.error('Failed to save note.');
+                }
+            });
+        }
+
+        // Save every 5 minutes (300,000 milliseconds)
+        setInterval(autoSaveNote, 1000);
+    </script>
+</head>
+<body>
+    <h1>Edit Note</h1>
+    <form action="{{ url_for('edit_note', id=note['_id']) }}" method="POST">
+        <label for="content">Note:</label>
+        <input type="text" id="content" name="content" value="{{ note['content'] }}" required>
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{{ url_for('createnote') }}">Back to Notes</a>
+</body>
+</html>
