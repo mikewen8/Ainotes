@@ -26,6 +26,7 @@
         }
     </style>
     <script>
+/*
         function captureHighlight() {
             const selection = window.getSelection();
             if (!selection.toString()) {
@@ -36,7 +37,51 @@
             const mark = document.createElement('mark');
             range.surroundContents(mark);
         }
+*/
+        function captureHighlight() {
+            const selection = window.getSelection();
+            if (!selection.toString()) {
+                alert('Please select text to highlight.');
+                return;
+            }
 
+            const range = selection.getRangeAt(0);
+            const container = range.commonAncestorContainer;
+
+            // Remove all existing marks within the selection
+            removeMarksInRange(range);
+
+            const mark = document.createElement('mark');
+            range.surroundContents(mark);
+        }
+
+        function removeMarksInRange(range) {
+            let container = range.commonAncestorContainer;
+            while (container && container.nodeType !== Node.ELEMENT_NODE) {
+                container = container.parentNode;
+            }
+        
+            if (!container) {
+                console.error('No valid container found for querySelectorAll.');
+                return;
+            }
+        
+            const marks = container.querySelectorAll('mark');
+            marks.forEach(mark => {
+                if (range.intersectsNode(mark)) {
+                    // Extract text content from the mark
+                    const textContent = mark.textContent;
+                    
+                    // Replace mark with its text content
+                    const textNode = document.createTextNode(textContent);
+                    mark.parentNode.replaceChild(textNode, mark);
+                }
+            });
+        }
+        
+        
+
+        
         function unhighlightSelection() {
             const selection = window.getSelection();
             if (!selection.toString()) {
