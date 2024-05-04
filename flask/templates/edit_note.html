@@ -32,7 +32,6 @@
                 alert('Please select text to highlight.');
                 return;
             }
-
             const range = selection.getRangeAt(0);
             const mark = document.createElement('mark');
             range.surroundContents(mark);
@@ -44,10 +43,8 @@
                 alert('Please select highlighted text to unhighlight.');
                 return;
             }
-
             const range = selection.getRangeAt(0);
             const markNode = range.commonAncestorContainer.parentElement;
-
             if (markNode.tagName.toLowerCase() === 'mark') {
                 const parent = markNode.parentNode;
                 while (markNode.firstChild) {
@@ -62,12 +59,10 @@
         function summarizeHighlight() {
             const selection = window.getSelection();
             const highlightedText = selection.toString().trim();
-
             if (!highlightedText) {
                 alert('No highlighted text found. Please highlight text first.');
                 return;
             }
-
             fetch("/summarize_selected", {
                 method: 'POST',
                 headers: {
@@ -95,7 +90,6 @@
         function autoSaveNote() {
             const contentEditableDiv = document.getElementById('content');
             const noteContent = contentEditableDiv.innerHTML;
-
             fetch("/edit_note/{{ note['_id'] }}", {
                 method: 'POST',
                 headers: {
@@ -113,7 +107,6 @@
                 }
             });
         }
-
         setInterval(autoSaveNote, 6000);
     </script>
 </head>

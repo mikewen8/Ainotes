@@ -86,7 +86,7 @@ def register():
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'created_by':(session['username']), 'content': content, 'shared_with':['Dev','Adhithyaa']})
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "", 'shared_with':['Dev','Adhithyaa']})
     #this will render the frontend
     all_notes = notes.find()
     summary = session.pop('summary', None)
