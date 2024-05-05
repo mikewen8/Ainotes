@@ -79,9 +79,38 @@
             });
         }
         
+        function unhighlightSelection() {
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) {
+                alert('Please select highlighted text to unhighlight.');
+                return;
+            }
+            const range = selection.getRangeAt(0);
+            const startContainer = range.startContainer;
+            const endContainer = range.endContainer;
+        
+            // If the start or end container is a mark, we will unwrap the mark
+            const startMarkNode = startContainer.nodeType === Node.TEXT_NODE ? startContainer.parentElement : startContainer;
+            const endMarkNode = endContainer.nodeType === Node.TEXT_NODE ? endContainer.parentElement : endContainer;
+        
+            // Check if the selected text is within a single mark node
+            if (startMarkNode.tagName === 'MARK' && startMarkNode === endMarkNode) {
+                unwrapMark(startMarkNode);
+            } else {
+                alert('Selected text is not highlighted or is across multiple highlights.');
+            }
+        }
+        
+        function unwrapMark(markNode) {
+            const parent = markNode.parentNode;
+            while (markNode.firstChild) {
+                parent.insertBefore(markNode.firstChild, markNode);
+            }
+            parent.removeChild(markNode);
+        }
         
 
-        
+        /*
         function unhighlightSelection() {
             const selection = window.getSelection();
             if (!selection.toString()) {
@@ -100,6 +129,10 @@
                 alert('Selected text is not highlighted.');
             }
         }
+        */
+
+
+
 
         function summarizeHighlight() {
             const selection = window.getSelection();
