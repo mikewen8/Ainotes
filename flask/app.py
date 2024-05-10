@@ -115,8 +115,9 @@ def createnote():
         notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':class_id ,'shared_with':['Mike','Dev']})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
+    user_classes = list(db.Classes.find({'students': session['username']}))
     summary = session.pop('summary', None)
-    return render_template('createnote.html', Notes=all_notes, summary=summary)
+    return render_template('createnote.html', Notes=all_notes, summary=summary, classes=user_classes)
 
 @app.route("/<id>/sent/")
 def sent(id):
@@ -152,7 +153,6 @@ def edit_note(id):
     return render_template('edit_note.html', note=note)
 
 
-
 @app.route('/shownotes', methods=['GET'])
 def show_notes():
     all_notes_byuser = list(notes.find({'created_by': session['username']}))
@@ -161,6 +161,10 @@ def show_notes():
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes_byuser, summary=summary)
 
+@app.route('/showclasses')
+def show_classes():
+    user_classes = list(db.Classes.find({'students': session['username']}))
+    return render_template('showclasses.html', classes=user_classes)
 
 @app.route("/note/<id>")
 def show_note(id):

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<h2>All Notes</h2>
+{% for note in Notes %}
+<div>
+    <p>{{ note['title'] }}</p>
+    <a href="{{ url_for('edit_note', id=note['_id']) }}">Edit Note</a> |
+    <a href="{{ url_for('sent', id=note['_id']) }}">Summarize</a>
+</div>
