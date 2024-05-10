@@ -6,14 +6,27 @@
 </head>
 <body>
     <h1>All Classes</h1>
+
+    <!-- Button to show all classes -->
+ 
+
+    <!-- Form for creating a new class -->
+    <h2>Create a New Class</h2>
+    <form action="{{ url_for('create_class') }}" method="POST">
+        <label for="class_name">Class Name:</label>
+        <input type="text" id="class_name" name="class_name" required>
+        <button type="submit">Add Class</button>
+    </form>
+
+    <!-- Listing all classes (Optional here if show_classes is separate) -->
+    <button onclick="window.location.href='{{ url_for('show_classes') }}'">Show Classes</button>
+    <h2>List of Classes</h2>
     {% if classes %}
     <ul>
         {% for class in classes %}
         <li>
-            Class Name: {{ class['class_name'] }}
-            <!-- Additional class info like teacher or room could go here -->
-            <a href="{{ url_for('edit_class', id=class['_id']) }}">Edit Class</a> | 
-            <a href="{{ url_for('class_details', id=class['_id']) }}">View Details</a>
+            Class Name: {{ class['class'] }}
+            <a href="{{ url_for('createnote', id=class['_id']) }}">Show Docs</a> |
         </li>
         {% endfor %}
     </ul>

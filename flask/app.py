@@ -80,7 +80,7 @@ def login():
         if user:
             session['username'] = username
             msg = 'logged in successfully!'
-            return render_template('createnote.html', msg=msg)
+            return render_template('class_fold.html', msg=msg)
         else:
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
@@ -106,13 +106,39 @@ def register():
 
 #---------------Michael SHEEESH -------------------------------
 
+
+@app.route("/class_fold",methods=['GET','POST'])
+def create_class():
+    if request.method == 'POST':
+        classtype = request.form['class_name']
+        classes.insert_one({'students':[(session['username']),'Mike'],'class':classtype})
+        usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
+    all_notes = notes.find()
+    user_classes = list(db.Classes.find({'students': session['username']}))
+    return render_template('class_fold.html', classes=user_classes)
+
+@app.route('/showclasses')
+def show_classes():
+    user_classes = list(classes.find({'students': session['username']}))
+    return render_template('class_fold.html', classes=user_classes)
+
+
+@app.route('/class_details/<id>')
+def class_details(id):
+    class_info = classes.find_one({'_id': ObjectId(id)})
+    if class_info:
+        return render_template('class_details.html', class_info=class_info)
+    else:
+        flash('Class not found', 'error')
+        return redirect(url_for('show_classes'))
+
+
+
 @app.route("/createnote",methods=['GET','POST'])
 def createnote():
     if request.method == 'POST':
-        content = request.form['content']
-        classes.insert_one({'subject':'subject'})
-        class_id=pull_class()
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':class_id ,'shared_with':['Mike','Dev']})
+        content = request.form['content']     
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'test','shared_with':['Mike','Dev']})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
     user_classes = list(db.Classes.find({'students': session['username']}))
@@ -161,10 +187,6 @@ def show_notes():
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes_byuser, summary=summary)
 
-@app.route('/showclasses')
-def show_classes():
-    user_classes = list(db.Classes.find({'students': session['username']}))
-    return render_template('showclasses.html', classes=user_classes)
 
 @app.route("/note/<id>")
 def show_note(id):
