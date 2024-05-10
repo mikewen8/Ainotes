@@ -31,6 +31,12 @@ def txt(class_id=None):
             text.append(" " + note['content'] + " ")
     return text
 
+def generate_best_note(notes):
+    prompt = "Summarize and enhance the following notes: " + " ".join(notes)
+    response = model.generate_content(prompt)
+    return response.text
+
+
 def send_note(doc): 
     response = model.generate_content("Create a summary out of this document and provide an example:" + doc)
     print(response.text)
@@ -171,12 +177,17 @@ def summarize_function(content):
     # Implement your summarization logic here
     return content[:100]  # Example: returning the first 100 characters
 
+@app.route("/bestnote/<class_id>")
+def best_note_route(class_id):
+    texts = txt(class_id)  # Fetch texts based on class_id
+    if not texts:
+        flash('No notes found for this class.', 'info')
+        return redirect(url_for('createnote'))
+    
+    best_note = generate_best_note(texts)
+    return render_template('best_note.html', best_note=best_note)
 
 
-def best_note():
-    text =[]
-    for i in notes:
-        print(i)
 
 
 
