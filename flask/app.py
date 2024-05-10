@@ -203,8 +203,6 @@ def best_note_route(class_id):
 
 
 
-
-
 if __name__ == '__main__':
     app.run(debug=True)
     

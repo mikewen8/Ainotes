@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<h2>All Notes</h2>
-{% for note in Notes %}
-<div>
-    <p>{{ note['title'] }}</p>
-    <a href="{{ url_for('edit_note', id=note['_id']) }}">Edit Note</a> |
-    <a href="{{ url_for('sent', id=note['_id']) }}">Summarize</a>
-</div>
+    <meta charset="UTF-8">
+    <title>All Classes</title>
+</head>
+<body>
+    <h1>All Classes</h1>
+    {% if classes %}
+    <ul>
+        {% for class in classes %}
+        <li>
+            Class Name: {{ class['class_name'] }}
+            <!-- Additional class info like teacher or room could go here -->
+            <a href="{{ url_for('edit_class', id=class['_id']) }}">Edit Class</a> | 
+            <a href="{{ url_for('class_details', id=class['_id']) }}">View Details</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No classes found.</p>
+    {% endif %}
+</body>
+</html>
