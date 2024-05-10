@@ -58,6 +58,13 @@ def pull_doc():
     else:
         print("No documents found in the collection.")
     return largest_id_document
+def pull_class():
+    largest_id_document = classes.find_one(sort=[("_id", -1)]) 
+    if largest_id_document:
+        print("The largest Notes _id is:", largest_id_document['_id'])
+    else:
+        print("No documents found in the collection.")
+    return largest_id_document
 
 #home data to show data and submit todo items
 
@@ -103,7 +110,9 @@ def register():
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'class' ,'shared_with':['Mike','Dev']})
+        classes.insert_one({'subject':'subject'})
+        class_id=pull_class()
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':class_id ,'shared_with':['Mike','Dev']})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
     summary = session.pop('summary', None)
