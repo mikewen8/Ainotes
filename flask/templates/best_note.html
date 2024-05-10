@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Best Note</title>
+</head>
+<body>
+    <h1>Best Note</h1>
+    {% if best_note %}
+    <p>{{ best_note }}</p>
+    {% else %}
+    <p>No best note available.</p>
+    {% endif %}
+    <a href="{{ url_for('createnote') }}">Back to Notes</a>
+</body>
+</html>

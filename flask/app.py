@@ -19,6 +19,7 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Studygroup']
 notes = db['Notes']
 usersc = db['Users']
+classes = db['Classes']
 
 
 def txt(class_id=None):
@@ -103,7 +104,7 @@ def createnote():
     if request.method == 'POST':
         content = request.form['content']
         notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'class' ,'shared_with':['Mike','Dev']})
-    #this will render the frontend
+        usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes, summary=summary)
