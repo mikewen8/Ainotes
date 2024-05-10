@@ -23,7 +23,18 @@ def txt():
             text.append(" "+note['content']+" ") 
     return text
 text = txt()
-
+"""
+gpt generation
+def txt(class_id=None):
+    query = {}
+    if class_id:
+        query['class'] = class_id  # Filtering by class if class_id is provided
+    text = []
+    for note in notes.find(query, {'content': 1, '_id': 0}):  # Exclude _id from the results
+        if 'content' in note:
+            text.append(" " + note['content'] + " ")
+    return text
+"""
 
 print(text)
 
@@ -36,6 +47,7 @@ def generate_best_note(notes):
 
 
 best_note = generate_best_note(text)
+
 
 print(best_note)
 

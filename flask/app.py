@@ -21,6 +21,16 @@ notes = db['Notes']
 usersc = db['Users']
 
 
+def txt(class_id=None):
+    query = {}
+    if class_id:
+        query['class'] = class_id  # Filtering by class if class_id is provided
+    text = []
+    for note in notes.find(query, {'content': 1, '_id': 0}):  # Exclude _id from the results
+        if 'content' in note:
+            text.append(" " + note['content'] + " ")
+    return text
+
 def send_note(doc): 
     response = model.generate_content("Create a summary out of this document and provide an example:" + doc)
     print(response.text)
