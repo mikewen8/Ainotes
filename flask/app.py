@@ -162,6 +162,14 @@ def summarize_function(content):
     return content[:100]  # Example: returning the first 100 characters
 
 
+
+def best_note():
+    text =[]
+    for i in notes:
+        print(i)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     
