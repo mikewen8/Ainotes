@@ -214,14 +214,17 @@ def summarize_function(content):
     return content[:100]  # Example: returning the first 100 characters
 
 @app.route("/bestnote/<class_id>")
-def best_note_route(class_id):
-    texts = txt(class_id)  # Fetch texts based on class_id
-    if not texts:
+def create_bestnote(class_id):
+    # Here, fetch all notes for a given class ID or similar criteria
+    notes_data = txt(class_id)  # Assuming txt() fetches the relevant notes
+    if not notes_data:
         flash('No notes found for this class.', 'info')
         return redirect(url_for('createnote'))
     
-    best_note = generate_best_note(texts)
-    return render_template('best_note.html', best_note=best_note)
+    # Generate the best note
+    best_note = generate_best_note(notes_data)
+    return render_template('best_note.html', best_note=best_note, Notes=notes_data)
+
 
 
 

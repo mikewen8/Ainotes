@@ -12,6 +12,9 @@
     </form>
 
     <button onclick="window.location.href='{{ url_for('show_notes') }}'">Show Notes</button>
+    <button onclick="window.location.href='{{ url_for('create_bestnote', class_id='class_id_here') }}'">Create Best Note</button>
+
+
 
     {% if summary %}
         <h2>Summary</h2>
