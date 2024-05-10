@@ -10,7 +10,6 @@ model = genai.GenerativeModel('gemini-pro')
 uri = "mongodb+srv://Mike:Mikedev88@studygroup.zvgkeux.mongodb.net/?retryWrites=true&w=majority&appName=Studygroup"
 
 
-
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Studygroup']
 notes = db['Notes']
@@ -21,6 +20,15 @@ def txt():
     #find first is the search criteria {} rules what docs are teken, second is the value your taking Projection what your going to return
     for note in notes.find({'class':'132'}, {'content': 1}): 
         if 'content' in note: 
+            text.append(" "+note['content']+" ") 
+    return text
+
+def enhance():
+    text = []
+    #find first is the search criteria {} rules what docs are teken, second is the value your taking Projection what your going to return
+    for note in notes.find({'class':'132'}, {'content': 1}): 
+        if 'content' in note: 
+            # need to make the notes enhanced
             text.append(" "+note['content']+" ") 
     return text
 
