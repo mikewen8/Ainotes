@@ -21,7 +21,7 @@ notes = db['Notes']
 usersc = db['Users']
 classes = db['Classes']
 
-
+"""
 def txt(class_id=None):
     query = {}
     if class_id:
@@ -31,6 +31,15 @@ def txt(class_id=None):
         if 'content' in note:
             text.append(" " + note['content'] + " ")
     return text
+"""
+def txt():
+    text = []
+    #find first is the search criteria {} rules what docs are teken, second is the value your taking Projection what your going to return
+    for note in notes.find({}, {'content': 1}): #need to put in the first scope look lik this {'class':'43'}
+        if 'content' in note: 
+            text.append(" "+note['content']+" ") 
+    return text
+
 
 def generate_best_note(notes):
     prompt = "Summarize and enhance the following notes: " + " ".join(notes)
@@ -138,7 +147,7 @@ def class_details(id):
 def createnote():
     if request.method == 'POST':
         content = request.form['content']     
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'test','shared_with':['Mike','Dev']})
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'','shared_with':['Mike','Dev']})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
     user_classes = list(db.Classes.find({'students': session['username']}))
@@ -216,7 +225,7 @@ def summarize_function(content):
 @app.route("/bestnote/<class_id>")
 def create_bestnote(class_id):
     # Here, fetch all notes for a given class ID or similar criteria
-    notes_data = txt(class_id)  # Assuming txt() fetches the relevant notes
+    notes_data = txt()  # Assuming txt() fetches the relevant notes implent the class_id
     if not notes_data:
         flash('No notes found for this class.', 'info')
         return redirect(url_for('createnote'))
