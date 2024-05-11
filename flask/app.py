@@ -7,6 +7,9 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import google.generativeai as genai
 from bson import ObjectId
+import random
+import hashlib
+import string
 
 genai.configure(api_key="AIzaSyCUXEfHA5OvN6Y41kEVaOVHPf5ayq8-2oo")
 model = genai.GenerativeModel('gemini-pro')
@@ -77,7 +80,6 @@ def pull_class():
 
 #home data to show data and submit todo items
 
-
 @app.route("/")
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -85,11 +87,18 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        user = usersc.find_one({'Name': username, 'Pswd': password})
+        user = usersc.find_one({'Name': username})
         if user:
-            session['username'] = username
-            msg = 'logged in successfully!'
-            return render_template('class_fold.html', msg=msg)
+            salt = user.get('Salt', '')  # Retrieve salt from the user record
+            truepass=user.get('Pswd','')
+            password+=salt
+            hashed_password = hashlib.sha512(password.encode()).hexdigest()
+            if hashed_password == truepass:
+                session['username'] = username
+                msg = 'Logged in successfully!'
+                return render_template('createnote.html', msg=msg)
+            else:
+                msg='Incorrect Password/Username'
         else:
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
@@ -106,12 +115,14 @@ def register():
         elif not username or not password:
             msg = 'Please fill out the form !'
         else:
-            usersc.insert_one({'Name': username, 'Pswd': password})
+            N=8
+            salt=''.join(random.choices(string.ascii_letters, k=N))
+            password+=salt
+            passw=hashlib.sha512(password.encode()).hexdigest() 
+            usersc.insert_one({'Name': username,'Pswd':passw,'Salt':salt})
             msg = 'You have successfully registered!'
             return render_template('login.html',msg=msg)
     return render_template('register.html',msg=msg)
-
-
 
 #---------------Michael SHEEESH -------------------------------
 @app.route('/class_fold')
