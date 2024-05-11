@@ -114,7 +114,11 @@ def register():
 
 
 #---------------Michael SHEEESH -------------------------------
-
+@app.route('/class_fold')
+def class_fold():
+    # Assuming you fetch classes or other data needed for the class fold page
+    user_classes = list(db.Classes.find({'students': session['username']}))
+    return render_template('class_fold.html', classes=user_classes)
 
 @app.route("/class_fold",methods=['GET','POST'])
 def create_class():
