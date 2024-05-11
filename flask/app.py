@@ -12,7 +12,7 @@ genai.configure(api_key="AIzaSyCUXEfHA5OvN6Y41kEVaOVHPf5ayq8-2oo")
 model = genai.GenerativeModel('gemini-pro')
 
 uri = "mongodb+srv://Mike:Mikedev88@studygroup.zvgkeux.mongodb.net/?retryWrites=true&w=majority&appName=Studygroup"
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = "your_secret_key_here"
 
 client = MongoClient(uri, server_api=ServerApi('1'))
