@@ -146,7 +146,7 @@ def class_details(id):
         return redirect(url_for('show_classes'))
 
 
-
+#want a button to share notes in edit not or createnote
 @app.route("/createnote",methods=['GET','POST'])
 def createnote():
     if request.method == 'POST':
