@@ -124,11 +124,20 @@ def class_fold():
 def create_class():
     if request.method == 'POST':
         classtype = request.form['class_name']
-        classes.insert_one({'students':[(session['username']),'Mike'],'class':classtype})
-        usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
+        class_id = classes.insert_one({'students': [session['username']], 'class': classtype}).inserted_id
+        usersc.update_one({'Name': session['username']},{'$addToSet': {'classes': class_id}})
     all_notes = notes.find()
     user_classes = list(db.Classes.find({'students': session['username']}))
     return render_template('class_fold.html', classes=user_classes)
+
+@app.route("/add_class",methods=['GET','POST'])
+def add_class():
+    if request.method == 'POST':
+        class_id = request.form['classid']
+        if classes.find_one({'_id': ObjectId(class_id)}) and not (usersc.find_one({'classes': ObjectId(class_id)})):
+            classes.update_one({'_id': ObjectId(class_id)}, {'$addToSet': {'students': session['username']}})
+            usersc.update_one({'Name': session['username']}, {'$addToSet': {'classes': ObjectId(class_id)}})
+    return redirect(url_for('class_fold'))
 
 @app.route('/showclasses')
 def show_classes():
@@ -151,7 +160,7 @@ def class_details(id):
 def createnote():
     if request.method == 'POST':
         content = request.form['content']     
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':'','shared_with':['Mike','Dev']})
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':''})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
     all_notes = notes.find()
     user_classes = list(db.Classes.find({'students': session['username']}))

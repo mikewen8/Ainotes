@@ -18,6 +18,12 @@
         <button type="submit">Add Class</button>
     </form>
 
+    <h2>Add a New Class</h2>
+    <form action="{{ url_for('add_class')}}" method="POST">
+        <input type="text" id="classid" name="classid" required>
+        <button type="submit">Add Class</button>
+    </form>
+
     <!-- Listing all classes (Optional here if show_classes is separate) -->
     <button onclick="window.location.href='{{ url_for('show_classes') }}'">Show Classes</button>
     <h2>List of Classes</h2>
