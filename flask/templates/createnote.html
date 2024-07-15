@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
     <title>Create Note</title>
+    <script>
+        function showClassPassword(classId) {
+            var passwordDivs = document.getElementsByClassName('class-password');
+            for (var i = 0; i < passwordDivs.length; i++) {
+                passwordDivs[i].style.display = 'none';
+            }
+            document.getElementById('password-' + classId).style.display = 'block';
+        }
+    </script>
 </head>
 <body>
     <h1>Create a New Note</h1>
-    <form action="{{ url_for('createnote') }}" method="POST">
+    <form action="{{ url_for('createnote')}}" method="POST">
         <label for="content">Notes:</label>
         <input type="text" name="content" required>
         <button type="submit">Submit</button>
@@ -15,22 +24,29 @@
     <button onclick="window.location.href='{{ url_for('create_bestnote', class_id='class_id_here') }}'">Create Best Note</button>
     <button onclick="window.location.href='{{ url_for('class_fold') }}'">Go to Class Page</button>
 
-
     {% if summary %}
         <h2>Summary</h2>
         <p>{{ summary }}</p>
     {% endif %}
 
+    <h2>Your Classes</h2>
+    {% for class in classes %}
+        <div>
+            <p>Class: {{ class['class'] }}</p>
+            <button type="button" onclick="showClassPassword('{{ class['_id'] }}')">Show Password</button>
+            <div id="password-{{ class['_id'] }}" class="class-password" style="display: none;">
+                Password: {{ class['_id'] }}
+            </div>
+        </div>
+    {% endfor %}
 
-<!--classes-->
     <h2>All Notes</h2>
     {% for note in Notes %}
-    <div>
-        <p>{{ note['title'] }}</p>
-        <a href="{{ url_for('edit_note', id=note['_id']) }}">Edit Note</a> |
-        <a href="{{ url_for('sent', id=note['_id']) }}">Summarize</a>
-    </div>
-
+        <div>
+            <p>{{ note['title'] }}</p>
+            <a href="{{ url_for('edit_note', id=note['_id']) }}">Edit Note</a> |
+            <a href="{{ url_for('sent', id=note['_id']) }}">Summarize</a>
+        </div>
     {% else %}
         <p>No notes available.</p>
     {% endfor %}

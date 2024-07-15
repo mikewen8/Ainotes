@@ -6,7 +6,10 @@ from flask import Flask, render_template, url_for, request, redirect, session, f
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import google.generativeai as genai
-from bson import ObjectId
+from bson.objectid import ObjectId
+import time
+import threading
+import os
 
 genai.configure(api_key="AIzaSyCUXEfHA5OvN6Y41kEVaOVHPf5ayq8-2oo")
 model = genai.GenerativeModel('gemini-pro')
@@ -35,11 +38,21 @@ def txt(class_id=None):
 def txt():
     text = []
     #find first is the search criteria {} rules what docs are teken, second is the value your taking Projection what your going to return
-    for note in notes.find({}, {'content': 1}): #need to put in the first scope look lik this {'class':'43'}
+    for note in notes.find({'class': session['classid']}, {'content': 1, '_id': 0}): #need to put in the first scope look lik this {'class':'43'}
         if 'content' in note: 
-            text.append(" "+note['content']+" ") 
+            text.append(" "+note['content']+" ")
     return text
 
+#def generate_unique_class_id():
+    #while True:
+        #for i in classes.find({},{"_id":1, "students":0, "class":0}):
+            #class_id = ObjectId(os.urandom(12).hex())
+            #newclassid = {"$set" : {'_id': class_id}}
+            #if not classes.find_one({'_id': class_id}):
+                #classes.update_one(i,newclassid)
+        #time.sleep(10)
+
+#t1=threading.Thread(target=generate_unique_class_id)          
 
 def generate_best_note(notes):
     prompt = "Summarize and enhance the following notes: " + " ".join(notes)
@@ -117,6 +130,7 @@ def register():
 @app.route('/class_fold')
 def class_fold():
     # Assuming you fetch classes or other data needed for the class fold page
+    session.pop('classid',None)
     user_classes = list(db.Classes.find({'students': session['username']}))
     return render_template('class_fold.html', classes=user_classes)
 
@@ -126,7 +140,7 @@ def create_class():
         classtype = request.form['class_name']
         class_id = classes.insert_one({'students': [session['username']], 'class': classtype}).inserted_id
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes': class_id}})
-    all_notes = notes.find()
+    #all_notes = notes.find()
     user_classes = list(db.Classes.find({'students': session['username']}))
     return render_template('class_fold.html', classes=user_classes)
 
@@ -159,10 +173,13 @@ def class_details(id):
 @app.route("/createnote",methods=['GET','POST'])
 def createnote():
     if request.method == 'POST':
-        content = request.form['content']     
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class':''})
+        content = request.form['content']
+        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class': session['classid']})
         usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
-    all_notes = notes.find()
+    class_id = request.args.get('id')
+    if (class_id!=None):
+        session['classid']=request.args.get('id')
+    all_notes = notes.find({'class': session['classid']})
     user_classes = list(db.Classes.find({'students': session['username']}))
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes, summary=summary, classes=user_classes)
@@ -249,7 +266,7 @@ def create_bestnote(class_id):
 
 
 
-
+#t1.start()
 if __name__ == '__main__':
     app.run(debug=True)
     
