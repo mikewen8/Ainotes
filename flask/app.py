@@ -80,6 +80,7 @@ def pull_doc():
     else:
         print("No documents found in the collection.")
     return largest_id_document
+
 def pull_class():
     largest_id_document = classes.find_one(sort=[("_id", -1)]) 
     if largest_id_document:
@@ -94,6 +95,7 @@ def pull_class():
 @app.route("/")
 @app.route("/login",methods=['GET','POST'])
 def login():
+    session.pop('username',None)
     msg=''
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
@@ -102,7 +104,8 @@ def login():
         if user:
             session['username'] = username
             msg = 'logged in successfully!'
-            return render_template('class_fold.html', msg=msg)
+            user_classes = list(classes.find({'students': session['username']}))
+            return render_template('class_fold.html', msg=msg, classes=user_classes)
         else:
             msg='Incorrect Password/Username'
     return render_template('login.html',msg=msg)
@@ -131,7 +134,7 @@ def register():
 def class_fold():
     # Assuming you fetch classes or other data needed for the class fold page
     session.pop('classid',None)
-    user_classes = list(db.Classes.find({'students': session['username']}))
+    user_classes = list(classes.find({'students': session['username']}))
     return render_template('class_fold.html', classes=user_classes)
 
 @app.route("/class_fold",methods=['GET','POST'])
@@ -174,13 +177,14 @@ def class_details(id):
 def createnote():
     if request.method == 'POST':
         content = request.form['content']
-        notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'class': session['classid']})
-        usersc.update_one({'Name': session['username']},{'$addToSet': {'classes':'class'}})
+        result=notes.insert_one({'created_by':(session['username']), 'title': content,'content': "",'shared_with':"",'class': session['classid']})
+        note_id=result.inserted_id
+        return redirect(url_for('edit_note', id=note_id))
     class_id = request.args.get('id')
     if (class_id!=None):
         session['classid']=request.args.get('id')
     all_notes = notes.find({'class': session['classid']})
-    user_classes = list(db.Classes.find({'students': session['username']}))
+    user_classes = [classes.find_one({'_id': ObjectId(class_id)})]
     summary = session.pop('summary', None)
     return render_template('createnote.html', Notes=all_notes, summary=summary, classes=user_classes)
 

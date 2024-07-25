@@ -14,14 +14,14 @@
 </head>
 <body>
     <h1>Create a New Note</h1>
-    <form action="{{ url_for('createnote')}}" method="POST">
+    <form action="{{ url_for('createnote') }}" method="POST">
         <label for="content">Notes:</label>
         <input type="text" name="content" required>
         <button type="submit">Submit</button>
     </form>
 
     <button onclick="window.location.href='{{ url_for('show_notes') }}'">Show Notes</button>
-    <button onclick="window.location.href='{{ url_for('create_bestnote', class_id='class_id_here') }}'">Create Best Note</button>
+    <button onclick="window.location.href='{{ url_for('create_bestnote', class_id=session.get('classid', 'class_id_here')) }}'">Create Best Note</button>
     <button onclick="window.location.href='{{ url_for('class_fold') }}'">Go to Class Page</button>
 
     {% if summary %}
@@ -29,16 +29,18 @@
         <p>{{ summary }}</p>
     {% endif %}
 
-    <h2>Your Classes</h2>
-    {% for class in classes %}
-        <div>
-            <p>Class: {{ class['class'] }}</p>
-            <button type="button" onclick="showClassPassword('{{ class['_id'] }}')">Show Password</button>
-            <div id="password-{{ class['_id'] }}" class="class-password" style="display: none;">
-                Password: {{ class['_id'] }}
+    {% if classes %}
+        <h2>Your Class</h2>
+        {% for class in classes %}
+            <div>
+                <p>Class: {{ class['class'] }}</p>
+                <button type="button" onclick="showClassPassword('{{ class['_id'] }}')">Show Password</button>
+                <div id="password-{{ class['_id'] }}" class="class-password" style="display: none;">
+                    Password: {{ class['_id'] }}
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 
     <h2>All Notes</h2>
     {% for note in Notes %}
