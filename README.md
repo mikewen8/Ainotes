@@ -1,5 +1,5 @@
 # Ainotes
-This is for the google AI hack, created by Michael Wen, Jordan Bouret
+This is for the google AI hack, created by Michael Wen, Jordan Bouret, Nathan Tran
 
 Current tasks------
 Jordan or Adi
